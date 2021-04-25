@@ -3,6 +3,7 @@ from scrapy.selector import Selector
 from elasticsearch import Elasticsearch
 from config import setting
 from f import pare
+import uuid
 
 es = Elasticsearch([{'host':setting.elastic_host,'port':setting.elastic_port}])
 
@@ -24,5 +25,6 @@ class CovidSpider(scrapy.Spider):
                 "pubDate":pubDates[i],
                 "crawl_url":self.start_urls[0]
             }
+            id = uuid.uuid4()
             index = indexs[i]
-            es.index(index = index, body=body)
+            es.index(index=index,id=id,body=body,doc_type='{}'.format(index),ignore=400)
