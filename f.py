@@ -1,4 +1,4 @@
-import re, requests
+import re, requests, json
 
 def pare(data:str):
     data.replace("&","and")
@@ -8,13 +8,14 @@ def pare(data:str):
     return data
 
 def depare(data:str):
-    data.replace("-","\s")
+    data = data.replace("-"," ")
     return data
 
 def faiss_train(data:list):
     response = requests.post(
         "http://tstsv.ddns.net:8000/edit/train/index_v1",
-        data = {
+        data = json.dumps({
             "index": data
-        }
+        })
     )
+    print(response)

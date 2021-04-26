@@ -11,10 +11,16 @@ app = FastAPI()
 es = Elasticsearch([{'host':'tstsv.ddns.net','port':9200}])
 
 @app.on_event("startup")
-@repeat_every(seconds=60*60*6)
+@repeat_every(seconds=60*60*8)
 def crawl_all_exist_url():
     for url in list(setting.urls.keys()):
         crawl_one_url(url)
+
+@app.get("/crawl_all_url")
+def crawl_all():
+    for url in list(setting.urls.keys()):
+        crawl_one_url(url)
+    return {"status":"success"}
 
 @app.get("/adding_url")
 def add(

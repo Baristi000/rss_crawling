@@ -38,9 +38,6 @@ class CovidSpider(scrapy.Spider):
                 es.indices.create(index=index)                       #insert into eplastic search server
                 es.index(index=index,body=body,doc_type='{}'.format(index))
                 trainable.append(index)
+                faiss_train(str(depare(index)))
             except ElasticsearchException as err:
                 pass
-        train_index = []
-        for index in trainable:
-            train_index.append(depare(index))
-        faiss_train(train_index)
