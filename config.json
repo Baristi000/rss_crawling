@@ -1,0 +1,8 @@
+{
+    "urls":{
+        "https://tools.cdc.gov/api/v2/resources/media/404952.rss":"covid",
+        "https://www.who.int/feeds/entity/csr/don/en/rss.xml":"covid"
+    },
+    "elastic_host":"tstsv.ddns.net",
+    "elastic_port":9200
+}

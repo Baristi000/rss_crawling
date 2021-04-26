@@ -22,6 +22,7 @@ def add(
     crawl_type:str = "covid"
 ):
     setting.urls.update({url:crawl_type})
+    setting.save()
     return {"status":"success"}
 
 @app.get("/crawl_one_url")

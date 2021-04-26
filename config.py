@@ -1,9 +1,10 @@
+import json
 class Setting():
-    urls:dict = {
-        "https://tools.cdc.gov/api/v2/resources/media/404952.rss":"covid",
-#        "https://news.google.com/rss/search?hl=en-US&gl=US&ceid=US:en&q=CORONA+OR+COVID19":"google_rss_feed"
-    }
-    elastic_host:str = "tstsv.ddns.net"
-    elastic_port:int = 9200
+    config = json.load(open("./config.json"))
+    urls:dict = config["urls"]
+    elastic_host:str = config["elastic_host"]
+    elastic_port:int = config["elastic_port"]
+    def save(self):
+        json.dump(self.config,open("./config.json","w"))
 
 setting = Setting()
