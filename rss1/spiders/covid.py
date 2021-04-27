@@ -16,11 +16,14 @@ class CovidSpider(scrapy.Spider):
         indexs = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"title\"]/text()").extract()
         links = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"link\"]/text()").extract()
         descriptions = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"description\"]/text()").extract()
-        pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDates\"]/text()").extract()
+        pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDate\"]/text()").extract()
         trainable = []
         for i in range(len(indexs)):
             indexs[i] = pare(indexs[i])
             print(indexs[i])
+            print(links[i])
+            print(pubDates[i])
+            print(descriptions[i])
             body = {
                 "description":descriptions[i],
                 "pubDate":pubDates[i],
