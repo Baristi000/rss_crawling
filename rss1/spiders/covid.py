@@ -19,18 +19,8 @@ class CovidSpider(scrapy.Spider):
         pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDate\"]/text()").extract()
         trainable = []
         train_index = []
-        print("********************************************************")
-        for i in range(len(pubDates)):
-            print(pare(indexs[i]))
-            print(pare(links[i]))
-            print(pare(descriptions[i]))
-            print(pare(pubDates[i]))
         for i in range(len(indexs)):
             indexs[i] = pare(indexs[i])
-            print(indexs[i])
-            print(links[i])
-            print(pubDates[i])
-            print(descriptions[i])
             body = {
                 "description":descriptions[i],
                 "pubDate":pubDates[i],
