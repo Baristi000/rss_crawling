@@ -13,14 +13,11 @@ class CovidSpider(scrapy.Spider):
     start_urls = []
 
     def parse(self, response):
-        indexs = Selector(response).xpath("/rss/channel/item/title/text()").extract()
-        #
+        indexs = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"title\"]/text()").extract()
+        links = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"link\"]/text()").extract()
+        descriptions = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"description\"]/text()").extract()
+        pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDates\"]/text()").extract()
         trainable = []
-        links = Selector(response).xpath("/rss/channel/item/link/text()").extract()
-        descriptions = Selector(response).xpath("/rss/channel/item/description/text()").extract()
-        pubDates= Selector(response).xpath("/rss/channel/item/pubDate/text()").extract()
-        #id = uuid.uuid4()
-        #id = "e722a9e8-13c1-4868-a836-1ed8de72a4bd"
         for i in range(len(indexs)):
             indexs[i] = pare(indexs[i])
             print(indexs[i])
