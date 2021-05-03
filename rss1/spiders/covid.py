@@ -16,14 +16,16 @@ class CovidSpider(scrapy.Spider):
         indexs = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"title\"]/text()").extract()
         links = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"link\"]/text()").extract()
         descriptions = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"description\"]/text()").extract()
-        pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDate\"]/text()").extract()
+#        pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDate\"]/text()").extract()
         trainable = []
         train_index = []
+        print("*******************************************")
+        print(len(indexs))
         for i in range(len(indexs)):
             indexs[i] = pare(indexs[i])
             body = {
                 "description":descriptions[i],
-                "pubDate":pubDates[i],
+#                "pubDate":pubDates[i],
                 "crawl_url":self.start_urls[0],
                 "link":links[i]
             }
@@ -33,9 +35,10 @@ class CovidSpider(scrapy.Spider):
             
             try:
                 es.indices.create(index=index)                       #insert into eplastic search server
-                es.index(index=index,body=body,doc_type='{}'.format(index), ignore=400)
+                r = es.index(index=index,body=body,doc_type='{}'.format(index), ignore=400)
                 trainable.append(index)
                 train_index.append(str(depare(index)))
+                faiss_train([str(depare(index))])
             except ElasticsearchException as err:
-                pass
-        faiss_train(train_index)
+                break
+        #faiss_train(train_index)

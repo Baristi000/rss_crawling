@@ -1,4 +1,5 @@
 import re, requests, json
+from config import setting
 
 def pare(data:str):
     data.replace("&","and")
@@ -14,7 +15,7 @@ def depare(data:str):
 
 def faiss_train(data:list):
     response = requests.post(
-        "http://tstsv.ddns.net:8000/edit/train/index_v1",
+        "http://"+setting.elastic_host+":8000/edit/train/index_v1",
         data = json.dumps({
             "index": data
         })
