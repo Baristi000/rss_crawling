@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
-import uvicorn, traceback
+import uvicorn, traceback, os
 from subprocess import run
 from threading import Thread
 from elasticsearch import Elasticsearch
@@ -10,11 +10,11 @@ from config import setting
 app = FastAPI()
 es = Elasticsearch([{'host':'tstsv.ddns.net','port':9200}])
 
-@app.on_event("startup")
+''' @app.on_event("startup")
 @repeat_every(seconds=60*60*8)
 def crawl_all_exist_url():
     for url in list(setting.urls.keys()):
-        crawl_one_url(url,True)
+        crawl_one_url(url,True) '''
 
 @app.get("/crawl_all_url")
 def crawl_all(
@@ -43,6 +43,17 @@ def add(
 @app.get("/get_all_url")
 def get_url():
     return{"url":list(setting.urls.keys())}
+
+@app.get("/prune_null_data_file")
+#check and delete all null data file in DataStore directory
+def prune():
+    origin_path = str(os.path.realpath("."))+"/DataStore/"
+    dirs = os.listdir(origin_path)
+    result = {}
+    for path in dirs:
+        data.update({origin_path+path:os.stat(origin_path+path).st_size})
+        if os.stat(origin_path+path).st_size == 0:
+            os.remove(origin_path+path)
 
 #crawl one url
 def crawl_one_url(

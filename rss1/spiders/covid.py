@@ -19,12 +19,12 @@ class CovidSpider(scrapy.Spider):
     }
 
     def parse(self, response):
-        indexs = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"title\"]/text()").extract()
-        links = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"link\"]/text()").extract()
-        descriptions = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"description\"]/text()").extract()
-        pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDate\"]/text()").extract()
+        indexs = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"title\"]/text()").extract()
+        links = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"link\"]/text()").extract()
+        descriptions = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"description\"]/text()").extract()
+        pubDates = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"pubDate\"]/text()").extract()
         if len(pubDates) == 0:
-            pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubdate\"]/text()").extract()
+            pubDates = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"pubdate\"]/text()").extract()
         trainable = []
         train_index = []
         print("*******************************************")
