@@ -50,11 +50,16 @@ def prune():
     origin_path = str(os.path.realpath("."))+"/DataStore/"
     dirs = os.listdir(origin_path)
     result = {}
+    size = 0.0
     for path in dirs:
         result.update({origin_path+path:os.stat(origin_path+path).st_size})
+        size+=os.stat(origin_path+path).st_size
         if os.stat(origin_path+path).st_size == 0:
             os.remove(origin_path+path)
-    return result
+    return {
+        "total_size":str(size*.1/1024/1024)+" mb",
+        "detail":result
+    }
 
 #crawl one url
 def crawl_one_url(
