@@ -1,11 +1,17 @@
 from scrapy.crawler import CrawlerProcess
 from rss1.spiders import covid#, covid2
-import sys
+import sys, uuid, os
 from config import setting
 
 if __name__ == "__main__":
     url = str(sys.argv[1])
+
     process = CrawlerProcess()
+    if sys.argv[-1] == "json":
+        process = CrawlerProcess({
+            'FEED_FORMAT': 'json',
+            'FEED_URI': str(os.path.realpath("."))+'/DataStore/'+str(uuid.uuid4())+".json"
+        })
 
     if setting.urls[url] == "covid":
         process.crawl(covid.CovidSpider,start_urls=[url],kwargs={

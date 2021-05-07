@@ -17,10 +17,19 @@ def crawl_all_exist_url():
         crawl_one_url(url) '''
 
 @app.get("/crawl_all_url")
-def crawl_all():
+def crawl_all(
+    export_to_json:bool = False
+):
     for url in list(setting.urls.keys()):
-        crawl_one_url(url)
+        crawl_one_url(url,export_to_json)
     return {"status":"success"}
+
+@app.get("/crawl_one_url")
+def crawing(
+    url:str = None,
+    export_to_json:bool = False
+):
+    return {"status":crawl_one_url(url,export_to_json)}
 
 @app.get("/adding_url")
 def add(
@@ -31,23 +40,21 @@ def add(
     setting.save()
     return {"status":"success"}
 
-@app.get("/crawl_one_url")
-def crawing(
-    url:str = None
-):
-    return {"status":crawl_one_url(url)}
-
 @app.get("/get_all_url")
 def get_url():
     return{"url":list(setting.urls.keys())}
 
 #crawl one url
 def crawl_one_url(
-    url:str = None
+    url:str = None,
+    export:bool = False
 ):
     try:
         crawl_type = setting.urls[url]
-        run(["python","crawl.py",f"{url}",f"{crawl_type}"])
+        if export:
+            run(["python","crawl.py",f"{url}",f"{crawl_type}","json"])
+        else:
+            run(["python","crawl.py",f"{url}",f"{crawl_type}"])
     except Exception:
         traceback.print_exc()
         return False

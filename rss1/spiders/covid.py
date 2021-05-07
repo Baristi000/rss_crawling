@@ -5,13 +5,18 @@ from config import setting
 from f import pare, faiss_train, depare
 import uuid
 import time
+from rss1.items import Rss1Item
 
 es = Elasticsearch([{'host':setting.elastic_host,'port':setting.elastic_port}])
 
 class CovidSpider(scrapy.Spider):
     name = 'covid'
-    allowed_domains = []
-    start_urls = []
+    allowed_domains = [url.split("/")[2].split(":")[0] for url in list(setting.urls.keys())]
+    start_urls = list(setting.urls.keys())
+    custom_settings = {
+        'LOG_ENABLED': True,
+        'LOG_LEVEL'  : "WARNING"
+    }
 
     def parse(self, response):
         indexs = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"title\"]/text()").extract()
@@ -21,6 +26,7 @@ class CovidSpider(scrapy.Spider):
         trainable = []
         train_index = []
         print("*******************************************")
+        print(self.start_urls)
         print(len(indexs))
         for i in range(len(indexs)):
             indexs[i] = pare(indexs[i])
@@ -29,7 +35,7 @@ class CovidSpider(scrapy.Spider):
                     "description":descriptions[i],
                     "pubDate":pubDates[i],
                     "crawl_url":self.start_urls[0],
-                    "link":links[i]
+                    "pubDate":links[i]
                 }
             except:
                 named_tuple = time.localtime() # get struct_time
@@ -50,6 +56,13 @@ class CovidSpider(scrapy.Spider):
                 trainable.append(index)
                 train_index.append(str(depare(index)))
                 faiss_train([str(depare(index))])
+                item = Rss1Item()
+                item["index"] = index
+                item["description"] = index
+                item["pubDate"] = index
+                item["link"] = index
+                item["crawl_url"] = index
+                yield item
             except ElasticsearchException as err:
                 break
         #faiss_train(train_index)
