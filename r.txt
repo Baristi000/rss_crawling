@@ -1,5 +1,7 @@
 scrapy
 requests 
-fastapi 
+fastapi
+fastapi_utils
 uvicorn 
 multipart
+elasticsearch
