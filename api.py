@@ -51,9 +51,10 @@ def prune():
     dirs = os.listdir(origin_path)
     result = {}
     for path in dirs:
-        data.update({origin_path+path:os.stat(origin_path+path).st_size})
+        result.update({origin_path+path:os.stat(origin_path+path).st_size})
         if os.stat(origin_path+path).st_size == 0:
             os.remove(origin_path+path)
+    return result
 
 #crawl one url
 def crawl_one_url(
