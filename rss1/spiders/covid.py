@@ -23,6 +23,8 @@ class CovidSpider(scrapy.Spider):
         links = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"link\"]/text()").extract()
         descriptions = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"description\"]/text()").extract()
         pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubDate\"]/text()").extract()
+        if len(pubDates) == 0:
+            pubDates = Selector(response).xpath("//*[name() = \"item\"]").xpath("//*[name()=\"pubdate\"]/text()").extract()
         trainable = []
         train_index = []
         print("*******************************************")
@@ -30,32 +32,42 @@ class CovidSpider(scrapy.Spider):
         print(len(indexs))
         for i in range(len(indexs)):
             indexs[i] = pare(indexs[i])
+            body = {}
+            #update description
             try:
-                body = {
-                    "description":descriptions[i],
-                    "pubDate":pubDates[i],
-                    "crawl_url":self.start_urls[0],
-                    "pubDate":links[i]
-                }
+                body.update({"description":descriptions[i]})
+            except:
+                body.update({"description":"not provided"})
+            
+            #update pubDate
+            try:
+                body.update({"pubDate":pubDates[i]})
             except:
                 named_tuple = time.localtime() # get struct_time
                 time_string = time.strftime("%m/%d/%Y", named_tuple)
-                body = {
-                    "description":descriptions[i],
-                    "pubDate":time_string,
-                    "crawl_url":self.start_urls[0],
-                    "link":links[i]
-                }
+                body.update({"pubDate":time_string})
             id = uuid.uuid4()
             index = indexs[i]
 
-            
+            #update crawl_url
+            body.update({"crawl_url":self.start_urls[0]})
+
+            #update link
             try:
-                es.indices.create(index=index)                       #insert into eplastic search server
+                body.update({"link":links[i]})
+            except:
+                body.update({"link":"not provided"})
+
+            #try to put data to elastisearch, train search data, yield data to json file
+            try:
+                #insert into eplastic search server
+                es.indices.create(index=index)      
                 r = es.index(index=index,body=body,doc_type='{}'.format(index), ignore=400)
+                #send trian data
                 trainable.append(index)
                 train_index.append(str(depare(index)))
                 faiss_train([str(depare(index))])
+                # yield data to json file
                 item = Rss1Item()
                 item["index"] = index
                 item["description"] = index
