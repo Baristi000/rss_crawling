@@ -82,4 +82,4 @@ def a():
     print("done")
 
 if __name__ == "__main__":
-    uvicorn.run("api:app",host="0.0.0.0",port=8002, reload = True)
+    uvicorn.run("api:app",host="0.0.0.0",port=8002, reload = True, timeout_keep_alive=5, backlog=80)
