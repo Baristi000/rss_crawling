@@ -4,8 +4,11 @@ import sys, uuid, os
 from config import setting
 
 if __name__ == "__main__":
-    url = str(sys.argv[1])
 
+    if not os.path.exists('DataStore'):
+        os.makedirs('DataStore')
+
+    url = str(sys.argv[1])
     process = CrawlerProcess()
     if sys.argv[-1] == "json":
         process = CrawlerProcess({
