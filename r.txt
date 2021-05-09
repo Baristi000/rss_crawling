@@ -7,3 +7,5 @@ multipart
 elasticsearch
 numpy
 faiss-cpu
+SQLAlchemy
+mysqlclient
