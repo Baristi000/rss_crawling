@@ -5,3 +5,5 @@ fastapi_utils
 uvicorn 
 multipart
 elasticsearch
+numpy
+faiss-cpu

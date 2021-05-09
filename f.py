@@ -1,5 +1,8 @@
 import re, requests, json
 from config import setting
+from encoder import UniversalEncoder
+
+encoder = UniversalEncoder(setting.use_host,setting.use_port)
 
 def pare(data:str):
     data.replace("&","and")
@@ -14,11 +17,4 @@ def depare(data:str):
     return data
 
 def faiss_train(data:list):
-    response = requests.post(
-        "http://"+setting.elastic_host+":8000/edit/train/index_v1",
-        data = json.dumps({
-            "index": data
-        })
-    )
-    print(response)
-    pass
+    encoder.build_index(data,True)
