@@ -25,7 +25,6 @@ class CovidSpider(scrapy.Spider):
         pubDates = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"pubDate\"]/text()").extract()
         if len(pubDates) == 0:
             pubDates = Selector(response).xpath("//*[name() = \"item\"]")[0].xpath("//*[name()=\"pubdate\"]/text()").extract()
-        trainable = []
         train_index = []
         print("*******************************************")
         print(self.start_urls)
@@ -64,9 +63,7 @@ class CovidSpider(scrapy.Spider):
                 es.indices.create(index=index)      
                 r = es.index(index=index,body=body,doc_type='{}'.format(index), ignore=400)
                 #send trian data
-                trainable.append(index)
                 train_index.append(str(depare(index)))
-                faiss_train([str(depare(index))])
                 # yield data to json file
                 item = Rss1Item()
                 item["index"] = index
@@ -77,4 +74,4 @@ class CovidSpider(scrapy.Spider):
                 yield item
             except ElasticsearchException as err:
                 break
-        #faiss_train(train_index)
+        faiss_train(train_index)
