@@ -8,7 +8,7 @@ router = APIRouter()
 
 def crawl_one_url(
     url:str = None,
-    export:bool = False
+    export:bool = True
 ):
     try:
         crawl_type = setting.urls[url]
@@ -23,7 +23,7 @@ def crawl_one_url(
 
 @router.get("/crawl_all_url")
 def crawl_all(
-    export_to_json:bool = False
+    export:bool = True
 ):
     for url in list(setting.urls.keys()):
         crawl_one_url(url,export_to_json)
@@ -32,7 +32,7 @@ def crawl_all(
 @router.get("/crawl_one_url")
 def crawing(
     url:str = None,
-    export_to_json:bool = False
+    export:bool = True #export to json
 ):
     return {"status":crawl_one_url(url,export_to_json)}
 
