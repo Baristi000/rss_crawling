@@ -66,8 +66,8 @@ def prune():
         "detail":result
     }
 
-''' @router.on_event("startup")
+@router.on_event("startup")
 @repeat_every(seconds=60*60*8)
 def crawl_all_exist_url():
     for url in list(setting.urls.keys()):
-        crawl_one_url(url,True) '''
+        crawl_one_url(url,True)
