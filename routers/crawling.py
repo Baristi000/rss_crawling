@@ -37,6 +37,7 @@ def crawing(
     export:bool = True #export to json
 ):
     start_time=time.time()
+    crawl_one_url(url,export)
     return {"time consuming":time.time()-start_time}
 
 @router.get("/adding_url")
