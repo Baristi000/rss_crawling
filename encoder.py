@@ -45,7 +45,9 @@ class UniversalEncoder():
         all_vectors = np.array(all_vectors,dtype="f")
         return all_vectors
     
-    def build_index(self, data:list, append:bool=True):
+    def build_index(self, datas:list, append:bool=True):
+        data = []
+        [data.append(d.replace("-"," ")) for d in datas]
         vector = self.encode(data)                                         #converter data to vectors
         if append == False or crud.get_all(self.session) == []:
             setting.index_on_ram = faiss.IndexFlatL2(self.FEATURE_SIZE)    #init the index

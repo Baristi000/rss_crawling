@@ -73,5 +73,6 @@ class CovidSpider(scrapy.Spider):
                 item["crawl_url"] = index
                 yield item
             except ElasticsearchException as err:
-                break
-        faiss_train(train_index)
+                pass
+        if train_index != []:
+            faiss_train(train_index)

@@ -3,6 +3,7 @@ from fastapi_utils.tasks import repeat_every
 from subprocess import run
 import traceback, os
 from config import setting
+import time
 
 router = APIRouter()
 
@@ -25,16 +26,18 @@ def crawl_one_url(
 def crawl_all(
     export:bool = True
 ):
+    start_time=time.time()
     for url in list(setting.urls.keys()):
-        crawl_one_url(url,export_to_json)
-    return {"status":"success"}
+        crawl_one_url(url,export)
+    return {"time consuming":time.time()-start_time}
 
 @router.get("/crawl_one_url")
 def crawing(
     url:str = None,
     export:bool = True #export to json
 ):
-    return {"status":crawl_one_url(url,export_to_json)}
+    start_time=time.time()
+    return {"time consuming":time.time()-start_time}
 
 @router.get("/adding_url")
 def add(
