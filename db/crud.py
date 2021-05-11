@@ -13,7 +13,11 @@ def get_all(db: Session, skip: int = 0):
     return db.query(models.Data).offset(skip).limit(rows).all()
 
 def delete_at(db:Session, at:int):
-    db.query(models.Data).filter(models.Data.index == db.query(models.Data).offset(at).limit(1).first().index).delete(synchronize_session=False)
+    try:
+        db.query(models.Data).filter(models.Data.index == db.query(models.Data).offset(at).limit(1).first().index).delete(synchronize_session=False)
+    except:
+        db.rollback()
+        db.query(models.Data).filter(models.Data.index == db.query(models.Data).offset(at).limit(1).first().index).delete(synchronize_session=False)
     db.commit()
 
 def get_at(db:Session, at:int):
@@ -23,5 +27,9 @@ def get_at(db:Session, at:int):
         return None
 
 def delete_all(db:Session):
-    db.query(models.Data).delete()
+    try:
+        db.query(models.Data).delete()
+    except:
+        db.rollback()
+        db.query(models.Data).delete()
     db.commit()
